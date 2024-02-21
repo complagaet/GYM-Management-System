@@ -1,58 +1,67 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class Database {
-    private static final String URL = "jdbc:postgresql://localhost:5432/db_name";
-    private static final String USERNAME = "username";
-    private static final String PASSWORD = "password";
     private Connection connection;
+    private String url;
+    private String user;
+    private String password;
 
-    public void init() {
-        try {
-            // Установка соединения с базой данных
-            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-            System.out.println("Connected to the PostgreSQL server successfully.");
-        } catch (SQLException e) {
-            System.out.println("Connection failure.");
-            e.printStackTrace();
+    public Database(String url, String user, String password) {
+        this.url = url;
+        this.user = user;
+        this.password = password;
+    }
+
+    public void init() throws SQLException {
+        connection = DriverManager.getConnection(url, user, password);
+    }
+
+    public void save(String tableName, String[] columns, String[] values) throws SQLException {
+        StringBuilder queryBuilder = new StringBuilder("INSERT INTO ");
+        queryBuilder.append(tableName).append(" (");
+        for (String column : columns) {
+            queryBuilder.append(column).append(",");
+        }
+        queryBuilder.deleteCharAt(queryBuilder.length() - 1);
+        queryBuilder.append(") VALUES (");
+        for (String value : values) {
+            queryBuilder.append("'").append(value).append("',");
+        }
+        queryBuilder.deleteCharAt(queryBuilder.length() - 1);
+        queryBuilder.append(")");
+
+        try (Statement statement = connection.createStatement()) {
+            statement.executeUpdate(queryBuilder.toString());
         }
     }
 
-    public void save(String data) {
-        try {
-            // Подготовка запроса на вставку данных
-            String query = "INSERT INTO table_name(column_name) VALUES(?)";
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, data);
-
-            // Выполнение запроса
-            statement.executeUpdate();
-            System.out.println("Data saved successfully.");
-        } catch (SQLException e) {
-            System.out.println("Data save failure.");
-            e.printStackTrace();
+    public ResultSet load(String tableName, String[] columns) throws SQLException {
+        StringBuilder queryBuilder = new StringBuilder("SELECT ");
+        for (String column : columns) {
+            queryBuilder.append(column).append(",");
         }
+        queryBuilder.deleteCharAt(queryBuilder.length() - 1);
+        queryBuilder.append(" FROM ").append(tableName);
+
+        Statement statement = connection.createStatement();
+        return statement.executeQuery(queryBuilder.toString());
     }
 
-    public String load() {
-        String result = null;
-        try {
-            // Подготовка запроса на выборку данных
-            String query = "SELECT column_name FROM table_name";
-            PreparedStatement statement = connection.prepareStatement(query);
+    public void displayResultSet(ResultSet resultSet) throws SQLException {
+        ResultSetMetaData metaData = resultSet.getMetaData();
+        int columnCount = metaData.getColumnCount();
 
-            // Выполнение запроса и получение результата
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                result = resultSet.getString("column_name");
+        while (resultSet.next()) {
+            for (int i = 1; i <= columnCount; i++) {
+                System.out.print(metaData.getColumnName(i) + ": " + resultSet.getString(i) + "\t");
             }
-        } catch (SQLException e) {
-            System.out.println("Data load failure.");
-            e.printStackTrace();
+            System.out.println();
         }
-        return result;
+    }
+
+    public void close() throws SQLException {
+        if (connection != null) {
+            connection.close();
+        }
     }
 }
