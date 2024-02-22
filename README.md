@@ -118,4 +118,3 @@
     <li><span class="highlight">public void displayResultSet(ResultSet resultSet)</span> - displays the contents of a ResultSet.</li>
     <li><span class="highlight">public void close()</span> - closes the database connection.</li>
 </ul>
-
