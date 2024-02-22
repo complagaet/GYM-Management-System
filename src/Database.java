@@ -32,7 +32,7 @@ public class Database {
 
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(queryBuilder.toString());
-            System.out.println("[BD] OK!");
+            System.out.println("[BD] Accepted!");
         }
     }
 
