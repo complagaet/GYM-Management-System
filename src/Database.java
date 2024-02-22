@@ -2,9 +2,9 @@ import java.sql.*;
 
 public class Database {
     private Connection connection;
-    private String url;
-    private String user;
-    private String password;
+    private final String url;
+    private final String user;
+    private final String password;
 
     public Database(String url, String user, String password) {
         this.url = url;
@@ -32,6 +32,7 @@ public class Database {
 
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(queryBuilder.toString());
+            System.out.println("[BD] OK!");
         }
     }
 
