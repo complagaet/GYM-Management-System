@@ -60,6 +60,28 @@ public class Database {
         }
     }
 
+    public void createTable(String tableName, String[] columns, String[] columnTypes, String primaryKey) throws SQLException {
+        StringBuilder queryBuilder = new StringBuilder("CREATE TABLE IF NOT EXISTS ");
+        queryBuilder.append(tableName).append(" (");
+
+        for (int i = 0; i < columns.length; i++) {
+            queryBuilder.append(columns[i]).append(" ").append(columnTypes[i]);
+            if (columns[i].equals(primaryKey)) {
+                queryBuilder.append(" PRIMARY KEY GENERATED ALWAYS AS IDENTITY");
+            }
+            if (i < columns.length - 1) {
+                queryBuilder.append(", ");
+            }
+        }
+
+        queryBuilder.append(")");
+
+        try (Statement statement = connection.createStatement()) {
+            statement.executeUpdate(queryBuilder.toString());
+            System.out.println("[BD] Table created successfully!");
+        }
+    }
+
     public void close() throws SQLException {
         if (connection != null) {
             connection.close();
