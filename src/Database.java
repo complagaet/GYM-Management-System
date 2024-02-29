@@ -63,7 +63,7 @@ public class Database {
         return k;
     }
 
-    public void createTable(String tableName, String[] columns, String[] columnTypes, String primaryKey) throws SQLException {
+    public void createTable(String tableName, String[] columns, String[] columnTypes, String primaryKey) {
         StringBuilder queryBuilder = new StringBuilder("CREATE TABLE IF NOT EXISTS ");
         queryBuilder.append(tableName).append(" (");
 
@@ -82,6 +82,8 @@ public class Database {
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(queryBuilder.toString());
             System.out.println("[BD] Table created successfully!");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 

@@ -43,6 +43,10 @@ public class Menu {
                     this.serv.add_plan(t, a);
                     this.start();
 
+                case 3:
+                    this.serv.show_clients();
+                    this.start();
+
                 case 4:
                     this.serv.show_coaches();
                     this.start();
@@ -92,6 +96,9 @@ public class Menu {
 
                     this.serv.addCoach(fullName, phoneNumber, Integer.parseInt(age), gender, field, schedule);
                     this.start();
+
+                case 8:
+                    System.exit(0);
             }
         } catch (SQLException | NumberFormatException e) {
             System.out.println("Exception! " + e);

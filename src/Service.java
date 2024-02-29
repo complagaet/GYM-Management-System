@@ -77,4 +77,11 @@ public class Service {
         System.out.println("----- Coaches: ");
         return db.displayResultSet(n);
     }
+
+    public int show_clients() throws SQLException {
+        db.init();
+        ResultSet n = db.load("client", new String[] { "id", "fullname", "coach", "tariff" });
+        System.out.println("----- Clients: ");
+        return db.displayResultSet(n);
+    }
 }
