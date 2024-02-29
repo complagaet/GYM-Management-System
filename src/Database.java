@@ -48,16 +48,19 @@ public class Database {
         return statement.executeQuery(queryBuilder.toString());
     }
 
-    public void displayResultSet(ResultSet resultSet) throws SQLException {
+    public int displayResultSet(ResultSet resultSet) throws SQLException {
         ResultSetMetaData metaData = resultSet.getMetaData();
         int columnCount = metaData.getColumnCount();
 
+        int k = 0;
         while (resultSet.next()) {
             for (int i = 1; i <= columnCount; i++) {
                 System.out.print(metaData.getColumnName(i) + ": " + resultSet.getString(i) + "\t");
             }
-            System.out.println();
+             System.out.println();
+            k++;
         }
+        return k;
     }
 
     public void createTable(String tableName, String[] columns, String[] columnTypes, String primaryKey) throws SQLException {

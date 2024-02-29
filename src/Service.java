@@ -64,9 +64,17 @@ public class Service {
         System.out.println("[PLAN] " + name + " added!");
     }
 
-    public void show_plans() throws SQLException {
+    public int show_plans() throws SQLException {
         db.init();
         ResultSet n = db.load("plans", new String[] { "id", "name", "cost" });
-        db.displayResultSet(n);
+        System.out.println("----- Plans: ");
+        return db.displayResultSet(n);
+    }
+
+    public int show_coaches() throws SQLException {
+        db.init();
+        ResultSet n = db.load("coach", new String[] { "id", "fullname", "field", "schedule" });
+        System.out.println("----- Coaches: ");
+        return db.displayResultSet(n);
     }
 }
